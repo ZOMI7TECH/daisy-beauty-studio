@@ -282,6 +282,57 @@
   .item-name { font-weight: 400; }
   .item-price { color: var(--gold-dk); font-weight: 500; font-size: 0.78rem; letter-spacing: 0.04em; }
 
+  /* ── GALLERY ── */
+  #gallery { background: var(--cream); }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .gallery-card {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 2px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    cursor: default;
+  }
+  .gallery-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px var(--shadow); }
+  .gallery-card.rose-bg  { background: linear-gradient(135deg, var(--rose-lt) 0%, var(--rose) 100%); }
+  .gallery-card.gold-bg  { background: linear-gradient(135deg, var(--gold-lt) 0%, var(--gold) 100%); }
+  .gallery-card.mixed-bg { background: linear-gradient(135deg, var(--rose-lt) 0%, var(--gold-lt) 100%); }
+  .gallery-card-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+  .gallery-card-icon {
+    width: 48px;
+    height: 1px;
+    background: rgba(74,55,40,0.2);
+  }
+  .gallery-card-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--bark);
+    letter-spacing: 0.08em;
+  }
+  .gallery-card-sub {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--bark-lt);
+  }
+
   /* ── ABOUT ── */
   #about { background: var(--cream); }
   .about-grid {
@@ -459,6 +510,7 @@
     }
     .nav-links a:hover { background: var(--rose-lt); color: var(--rose-dk); }
     .services-grid { grid-template-columns: 1fr; }
+    .gallery-grid  { grid-template-columns: 1fr; }
     .about-grid { grid-template-columns: 1fr; }
     .about-visual { display: none; }
     .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -493,6 +545,7 @@
   </a>
   <ul class="nav-links" id="nav-links">
     <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -607,6 +660,63 @@
           <li><span class="item-name">Bridal hair</span><span class="item-price">$120</span></li>
           <li><span class="item-name">Bridal hair trial</span><span class="item-price">$85</span></li>
         </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-inner">
+    <p class="section-label reveal">Our work</p>
+    <h2 class="section-title reveal reveal-delay-1">A glimpse of our<br/><em>artistry</em></h2>
+    <div class="divider reveal reveal-delay-2"></div>
+
+    <div class="gallery-grid">
+      <!-- NAILS -->
+      <div class="gallery-card rose-bg reveal reveal-delay-1">
+        <div class="gallery-card-inner">
+          <div class="gallery-card-label">Nails</div>
+          <div class="gallery-card-sub">Manicure &amp; Pedicure</div>
+        </div>
+      </div>
+
+      <!-- MAKEUP -->
+      <div class="gallery-card gold-bg reveal reveal-delay-2">
+        <div class="gallery-card-inner">
+          <div class="gallery-card-label">Makeup</div>
+          <div class="gallery-card-sub">Everyday &amp; Bridal</div>
+        </div>
+      </div>
+
+      <!-- HAIR -->
+      <div class="gallery-card mixed-bg reveal reveal-delay-3">
+        <div class="gallery-card-inner">
+          <div class="gallery-card-label">Hair</div>
+          <div class="gallery-card-sub">Styling &amp; Occasions</div>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="gallery-card mixed-bg reveal reveal-delay-1">
+        <div class="gallery-card-inner">
+          <div class="gallery-card-label">Nails</div>
+          <div class="gallery-card-sub">Nail Art</div>
+        </div>
+      </div>
+
+      <div class="gallery-card rose-bg reveal reveal-delay-2">
+        <div class="gallery-card-inner">
+          <div class="gallery-card-label">Makeup</div>
+          <div class="gallery-card-sub">Evening Glam</div>
+        </div>
+      </div>
+
+      <div class="gallery-card gold-bg reveal reveal-delay-3">
+        <div class="gallery-card-inner">
+          <div class="gallery-card-label">Hair</div>
+          <div class="gallery-card-sub">Updo &amp; Bridal</div>
+        </div>
       </div>
     </div>
   </div>
