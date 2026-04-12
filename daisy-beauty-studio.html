@@ -75,6 +75,33 @@
   }
   .nav-links a:hover { color: var(--gold-dk); }
 
+  /* ── HAMBURGER ── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 101;
+  }
+  .hamburger span {
+    display: block;
+    height: 1.5px;
+    background: var(--bark);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease, background 0.2s;
+    transform-origin: center;
+  }
+  .hamburger:hover span { background: var(--gold-dk); }
+  .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
   /* ── HERO ── */
   #hero {
     position: relative;
@@ -408,7 +435,29 @@
 
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .nav-links {
+      position: fixed;
+      top: 60px; left: 0; right: 0;
+      flex-direction: column;
+      gap: 0;
+      background: rgba(250,247,242,0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--gold-lt);
+      box-shadow: 0 4px 16px var(--shadow);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-links.open { max-height: 260px; }
+    .nav-links li { border-top: 1px solid var(--gold-lt); }
+    .nav-links a {
+      display: block;
+      padding: 1rem 1.5rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.16em;
+    }
+    .nav-links a:hover { background: var(--rose-lt); color: var(--rose-dk); }
     .services-grid { grid-template-columns: 1fr; }
     .about-grid { grid-template-columns: 1fr; }
     .about-visual { display: none; }
@@ -442,11 +491,14 @@
     </svg>
     <span style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:#4A3728;letter-spacing:0.06em;">Daisy</span>
   </a>
-  <ul class="nav-links">
+  <ul class="nav-links" id="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -746,6 +798,30 @@
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
 });
+
+// ── HAMBURGER MENU ──
+(function() {
+  const btn = document.getElementById('hamburger');
+  const links = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+  });
+  // Close menu when a nav link is tapped
+  links.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      links.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+  // Close menu on outside click
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      links.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+})();
 
 // ── SCROLL REVEAL ──
 const observer = new IntersectionObserver((entries) => {
