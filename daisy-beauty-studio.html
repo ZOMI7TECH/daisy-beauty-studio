@@ -46,9 +46,10 @@
   .hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(3.5rem,8vw,7rem); font-weight:300; line-height:1.05; color:var(--bark); animation:fadeUp 0.9s 0.55s both; }
   .hero-title em { font-style:italic; color:var(--rose-dk); }
   .hero-sub { font-size:0.95rem; font-weight:300; color:var(--bark-lt); letter-spacing:0.04em; max-width:380px; line-height:1.8; margin-top:1.4rem; animation:fadeUp 0.9s 0.8s both; }
-  .hero-cta { display:inline-block; margin-top:2.4rem; padding:0.85rem 2.6rem; border:1px solid var(--gold); color:var(--bark); font-size:0.76rem; letter-spacing:0.18em; text-transform:uppercase; text-decoration:none; transition:background 0.3s,color 0.3s; animation:fadeUp 0.9s 1.05s both; position:relative; z-index:10; }
+  .hero-cta { display:inline-block; margin-top:2.4rem; margin-bottom:5rem; padding:0.85rem 2.6rem; border:1px solid var(--gold); color:var(--bark); font-size:0.76rem; letter-spacing:0.18em; text-transform:uppercase; text-decoration:none; transition:background 0.3s,color 0.3s; animation:fadeUp 0.9s 1.05s both; position:relative; z-index:10; }
   .hero-cta:hover { background:var(--gold); color:var(--white); }
-  .scroll-hint { position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px; animation:fadeIn 1s 1.6s both; z-index:1; pointer-events:none; }
+  .scroll-hint-wrap { position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%); z-index:1; pointer-events:none; animation:fadeIn 1s 1.6s both; }
+  .scroll-hint { display:flex; flex-direction:column; align-items:center; gap:6px; }
   .scroll-hint span { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold-dk); }
   .scroll-line { width:1px; height:40px; background:var(--gold); animation:scrollPulse 1.8s ease-in-out infinite; }
   @keyframes scrollPulse { 0%,100%{transform:scaleY(1);opacity:1;} 50%{transform:scaleY(0.4);opacity:0.4;} }
@@ -247,9 +248,11 @@
   <h1 class="hero-title">Where beauty<br/><em>blossoms</em></h1>
   <p class="hero-sub">A carefully curated studio experience crafted for women who appreciate quiet luxury and personal attention.</p>
   <a href="#services" class="hero-cta">Explore our services</a>
-  <div class="scroll-hint">
-    <span>scroll</span>
-    <div class="scroll-line"></div>
+  <div class="scroll-hint-wrap">
+    <div class="scroll-hint">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
   </div>
 </section>
 
