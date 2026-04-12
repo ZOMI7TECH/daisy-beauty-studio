@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Daisy Beauty Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --rose:    #E8B4C0;
+    --rose-dk: #C47A90;
+    --rose-lt: #F5DDE4;
+    --gold:    #C9A96E;
+    --gold-dk: #9E7A44;
+    --gold-lt: #F0E2CA;
+    --cream:   #FAF7F2;
+    --bark:    #4A3728;
+    --bark-lt: #7A5C42;
+    --white:   #FFFFFF;
+    --shadow:  rgba(74,55,40,0.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--bark);
+    overflow-x: hidden;
+  }
+
+  /* ── PETAL CANVAS ── */
+  #petal-canvas {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .petal {
+    position: absolute;
+    top: -60px;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(0) rotate(0deg) scale(1);   opacity: 0; }
+    5%   { opacity: 0.7; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(110vh) rotate(540deg) scale(0.6); opacity: 0; }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    transition: background 0.4s, box-shadow 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(250,247,242,0.96);
+    box-shadow: 0 1px 0 rgba(201,169,110,0.25);
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
+  .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bark);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold-dk); }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--rose-lt);
+    opacity: 0.35;
+    z-index: -1;
+  }
+  .hero-bg-circle.c1 { width: 520px; height: 520px; top: -80px; right: -120px; }
+  .hero-bg-circle.c2 { width: 320px; height: 320px; bottom: 60px; left: -80px; }
+
+  .hero-tagline {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-dk);
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--bark);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.55s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--rose-dk);
+  }
+  .hero-sub {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--bark-lt);
+    letter-spacing: 0.04em;
+    max-width: 380px;
+    line-height: 1.8;
+    margin-top: 1.4rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+  }
+  .hero-cta {
+    display: inline-block;
+    margin-top: 2.4rem;
+    padding: 0.85rem 2.6rem;
+    border: 1px solid var(--gold);
+    color: var(--bark);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+    opacity: 0;
+    animation: fadeUp 0.9s 1.05s forwards;
+  }
+  .hero-cta:hover { background: var(--gold); color: var(--white); }
+  .hero-logo-large {
+    margin-bottom: 1.6rem;
+    opacity: 0;
+    animation: fadeIn 1s 0.1s forwards;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    opacity: 0; animation: fadeIn 1s 1.6s forwards;
+  }
+  .scroll-hint span {
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold-dk);
+  }
+  .scroll-line {
+    width: 1px; height: 40px; background: var(--gold);
+    animation: scrollPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%,100% { transform: scaleY(1); opacity: 1; }
+    50%      { transform: scaleY(0.4); opacity: 0.4; }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ── SECTION SHARED ── */
+  section { position: relative; z-index: 1; }
+  .section-inner { max-width: 1100px; margin: 0 auto; padding: 6rem 2rem; }
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-dk);
+    margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--bark);
+  }
+  .section-title em { font-style: italic; color: var(--rose-dk); }
+  .divider {
+    width: 48px; height: 1px;
+    background: var(--gold);
+    margin: 1.4rem 0 2rem;
+  }
+
+  /* ── SERVICES ── */
+  #services { background: var(--white); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .service-card {
+    border: 1px solid var(--gold-lt);
+    padding: 2.6rem 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: default;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--rose-lt);
+    opacity: 0;
+    transition: opacity 0.35s;
+    z-index: 0;
+  }
+  .service-card:hover::before { opacity: 0.18; }
+  .service-card:hover { border-color: var(--rose-dk); transform: translateY(-4px); }
+  .service-card > * { position: relative; z-index: 1; }
+  .service-icon { margin-bottom: 1.4rem; }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.65rem;
+    font-weight: 600;
+    color: var(--bark);
+    margin-bottom: 0.5rem;
+  }
+  .service-desc {
+    font-size: 0.85rem;
+    color: var(--bark-lt);
+    line-height: 1.8;
+    margin-bottom: 1.6rem;
+  }
+  .service-items { list-style: none; border-top: 1px solid var(--gold-lt); padding-top: 1.2rem; }
+  .service-items li {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 0.82rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px dashed rgba(201,169,110,0.2);
+    color: var(--bark);
+  }
+  .service-items li:last-child { border-bottom: none; }
+  .item-name { font-weight: 400; }
+  .item-price { color: var(--gold-dk); font-weight: 500; font-size: 0.78rem; letter-spacing: 0.04em; }
+
+  /* ── ABOUT ── */
+  #about { background: var(--cream); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .about-visual {
+    position: relative;
+    height: 420px;
+  }
+  .about-box {
+    position: absolute;
+    border-radius: 2px;
+  }
+  .about-box.b1 {
+    inset: 0 40px 40px 0;
+    background: var(--rose-lt);
+  }
+  .about-box.b2 {
+    inset: 40px 0 0 40px;
+    background: var(--gold-lt);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-box.b2 svg { width: 80%; height: 80%; }
+  .about-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--bark);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    padding-left: 1.2rem;
+    border-left: 2px solid var(--gold);
+  }
+  .about-body {
+    font-size: 0.9rem;
+    color: var(--bark-lt);
+    line-height: 1.9;
+    margin-bottom: 1rem;
+  }
+  .about-highlights {
+    display: flex; gap: 2rem; margin-top: 2rem;
+  }
+  .highlight-item { text-align: center; }
+  .highlight-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: var(--gold-dk);
+    line-height: 1;
+  }
+  .highlight-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bark-lt);
+    margin-top: 0.3rem;
+  }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--bark); }
+  #contact .section-label { color: var(--gold); }
+  #contact .section-title { color: var(--cream); }
+  #contact .divider { background: var(--rose); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+  }
+  .contact-block { }
+  .contact-block-title {
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .contact-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+  .contact-icon {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,169,110,0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .contact-text { font-size: 0.88rem; color: rgba(250,247,242,0.75); line-height: 1.7; }
+  .contact-text strong { color: var(--cream); font-weight: 400; display: block; }
+  .hours-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 1rem;
+  }
+  .hours-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.82rem;
+    color: rgba(250,247,242,0.6);
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(201,169,110,0.12);
+  }
+  .hours-row .day { color: rgba(250,247,242,0.85); }
+  .social-row { display: flex; gap: 1rem; margin-top: 1.4rem; }
+  .social-btn {
+    padding: 0.6rem 1.4rem;
+    border: 1px solid rgba(201,169,110,0.4);
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+  }
+  .social-btn:hover { background: var(--gold); color: var(--bark); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #2E1F14;
+    padding: 2rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 1; position: relative;
+  }
+  .footer-copy {
+    font-size: 0.72rem;
+    color: rgba(250,247,242,0.35);
+    letter-spacing: 0.08em;
+  }
+  .footer-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: rgba(201,169,110,0.5);
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .services-grid { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-visual { display: none; }
+    .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .section-inner { padding: 4rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FALLING PETALS -->
+<div id="petal-canvas"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <svg width="32" height="32" viewBox="0 0 32 32">
+      <g transform="translate(16,14)">
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(0)"/>
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(40)"/>
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(80)"/>
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(120)"/>
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(160)"/>
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(200)"/>
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(240)"/>
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(280)"/>
+        <ellipse cx="0" cy="-9" rx="3.2" ry="6" fill="#E8B4C0" transform="rotate(320)"/>
+        <circle cx="0" cy="0" r="4.5" fill="#C9A96E"/>
+      </g>
+    </svg>
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:#4A3728;letter-spacing:0.06em;">Daisy</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+
+  <!-- Large logo -->
+  <div class="hero-logo-large">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <g transform="translate(60,52)">
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(0)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(40)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(80)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(120)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(160)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(200)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(240)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(280)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="17" fill="#E8B4C0" transform="rotate(320)"/>
+        <circle cx="0" cy="0" r="14" fill="#C9A96E"/>
+      </g>
+      <text x="60" y="84" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="22" font-weight="700" fill="#4A3728" letter-spacing="3">DAISY</text>
+      <text x="60" y="97" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="9.5" fill="#C9A96E" letter-spacing="5">BEAUTY STUDIO</text>
+      <line x1="18" y1="103" x2="102" y2="103" stroke="#C9A96E" stroke-width="0.6"/>
+    </svg>
+  </div>
+
+  <p class="hero-tagline">Nails · Makeup · Hair</p>
+  <h1 class="hero-title">Where beauty<br/><em>blossoms</em></h1>
+  <p class="hero-sub">A carefully curated studio experience crafted for women who appreciate quiet luxury and personal attention.</p>
+  <a href="#services" class="hero-cta">Explore our services</a>
+
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-inner">
+    <p class="section-label reveal">Our offerings</p>
+    <h2 class="section-title reveal reveal-delay-1">Services crafted<br/><em>with intention</em></h2>
+    <div class="divider reveal reveal-delay-2"></div>
+
+    <div class="services-grid">
+      <!-- NAILS -->
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <path d="M12 30 Q10 20 13 10 Q16 4 19 4 Q22 4 25 10 Q28 20 26 30 Q22 34 19 34 Q16 34 12 30Z" fill="#F5DDE4" stroke="#E8B4C0" stroke-width="1"/>
+            <path d="M15 30 Q14 22 16 14" stroke="#C9A96E" stroke-width="0.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-name">Nails</h3>
+        <p class="service-desc">Precision nail care from classic manicures to artistic gel designs. Every detail attended to.</p>
+        <ul class="service-items">
+          <li><span class="item-name">Classic manicure</span><span class="item-price">$35</span></li>
+          <li><span class="item-name">Gel manicure</span><span class="item-price">$50</span></li>
+          <li><span class="item-name">Classic pedicure</span><span class="item-price">$45</span></li>
+          <li><span class="item-name">Gel pedicure</span><span class="item-price">$60</span></li>
+          <li><span class="item-name">Nail art (per nail)</span><span class="item-price">from $5</span></li>
+          <li><span class="item-name">Full set acrylic</span><span class="item-price">$75</span></li>
+        </ul>
+      </div>
+
+      <!-- MAKEUP -->
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <ellipse cx="19" cy="13" rx="8" ry="10" fill="#F5DDE4" stroke="#E8B4C0" stroke-width="1"/>
+            <path d="M11 17 Q8 22 10 26 Q13 32 19 33 Q25 32 28 26 Q30 22 27 17" fill="#F0E2CA" stroke="#C9A96E" stroke-width="0.8"/>
+            <circle cx="15" cy="12" r="2" fill="#E8B4C0"/>
+            <circle cx="23" cy="12" r="2" fill="#E8B4C0"/>
+            <path d="M15 20 Q19 23 23 20" stroke="#C9A96E" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-name">Makeup</h3>
+        <p class="service-desc">From everyday glam to bridal perfection. We enhance your natural features with artistry.</p>
+        <ul class="service-items">
+          <li><span class="item-name">Natural everyday look</span><span class="item-price">$65</span></li>
+          <li><span class="item-name">Evening / event glam</span><span class="item-price">$85</span></li>
+          <li><span class="item-name">Bridal makeup</span><span class="item-price">$130</span></li>
+          <li><span class="item-name">Bridal trial</span><span class="item-price">$95</span></li>
+          <li><span class="item-name">Lash application</span><span class="item-price">$20</span></li>
+        </ul>
+      </div>
+
+      <!-- HAIR -->
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <path d="M10 6 Q10 2 19 2 Q28 2 28 6 Q30 14 27 22 Q24 30 19 34 Q14 30 11 22 Q8 14 10 6Z" fill="#F5DDE4" stroke="#E8B4C0" stroke-width="1"/>
+            <path d="M14 8 Q13 16 15 24" stroke="#C9A96E" stroke-width="0.7" stroke-linecap="round"/>
+            <path d="M19 6 Q18 15 19 25" stroke="#C9A96E" stroke-width="0.7" stroke-linecap="round"/>
+            <path d="M24 8 Q25 16 23 24" stroke="#C9A96E" stroke-width="0.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-name">Hair</h3>
+        <p class="service-desc">Blowouts, styling and special occasion hair. We create looks that last and move beautifully.</p>
+        <ul class="service-items">
+          <li><span class="item-name">Blowout</span><span class="item-price">$55</span></li>
+          <li><span class="item-name">Blowout + style</span><span class="item-price">$70</span></li>
+          <li><span class="item-name">Updo / special occasion</span><span class="item-price">$95</span></li>
+          <li><span class="item-name">Bridal hair</span><span class="item-price">$120</span></li>
+          <li><span class="item-name">Bridal hair trial</span><span class="item-price">$85</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-box b1"></div>
+        <div class="about-box b2">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(100,90)">
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(0)"/>
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(40)"/>
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(80)"/>
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(120)"/>
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(160)"/>
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(200)"/>
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(240)"/>
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(280)"/>
+              <ellipse cx="0" cy="-52" rx="16" ry="32" fill="#E8B4C0" transform="rotate(320)"/>
+              <circle cx="0" cy="0" r="24" fill="#C9A96E"/>
+            </g>
+            <text x="100" y="148" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="28" font-weight="700" fill="#4A3728" letter-spacing="4">DAISY</text>
+            <text x="100" y="166" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="11" fill="#9E7A44" letter-spacing="6">BEAUTY STUDIO</text>
+            <line x1="36" y1="174" x2="164" y2="174" stroke="#C9A96E" stroke-width="0.8"/>
+          </svg>
+        </div>
+      </div>
+      <div>
+        <p class="section-label reveal">Our story</p>
+        <h2 class="section-title reveal reveal-delay-1">Beauty is an art,<br/><em>not a routine</em></h2>
+        <div class="divider reveal reveal-delay-2"></div>
+        <blockquote class="about-quote reveal reveal-delay-2">
+          "We believe every woman deserves to feel truly seen — and truly beautiful."
+        </blockquote>
+        <p class="about-body reveal reveal-delay-2">
+          Daisy Beauty Studio was born from a simple belief: beauty services should feel personal, unhurried and deeply enjoyable. We keep our menu intentionally curated so that every service we offer, we offer exceptionally well.
+        </p>
+        <p class="about-body reveal reveal-delay-3">
+          Our studio is a calm, welcoming space designed for women who appreciate thoughtful craftsmanship. Whether you're preparing for a wedding, a night out, or simply yourself — you deserve the very best.
+        </p>
+        <div class="about-highlights reveal reveal-delay-3">
+          <div class="highlight-item">
+            <div class="highlight-num">8+</div>
+            <div class="highlight-label">Years of craft</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-num">500+</div>
+            <div class="highlight-label">Happy clients</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-num">3</div>
+            <div class="highlight-label">Services offered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <p class="section-label reveal">Get in touch</p>
+    <h2 class="section-title reveal reveal-delay-1">Let's make you<br/><em>feel beautiful</em></h2>
+    <div class="divider reveal reveal-delay-2"></div>
+
+    <div class="contact-grid">
+      <div class="contact-block reveal reveal-delay-1">
+        <p class="contact-block-title">Contact & Location</p>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 1C5.24 1 3 3.24 3 6C3 9.75 8 15 8 15C8 15 13 9.75 13 6C13 3.24 10.76 1 8 1ZM8 7.5C7.17 7.5 6.5 6.83 6.5 6C6.5 5.17 7.17 4.5 8 4.5C8.83 4.5 9.5 5.17 9.5 6C9.5 6.83 8.83 7.5 8 7.5Z" fill="#C9A96E"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <strong>Studio address</strong>
+            123 Bloom Avenue, Suite 4<br/>Your City, State 00000
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M13 10.5C12.25 10.5 11.52 10.37 10.85 10.14C10.63 10.06 10.38 10.12 10.21 10.29L9.18 11.32C7.83 10.63 6.37 9.17 5.68 7.82L6.71 6.79C6.88 6.62 6.94 6.37 6.86 6.15C6.63 5.48 6.5 4.75 6.5 4C6.5 3.72 6.28 3.5 6 3.5H4C3.72 3.5 3.5 3.72 3.5 4C3.5 9.25 7.75 13.5 13 13.5C13.28 13.5 13.5 13.28 13.5 13V11C13.5 10.72 13.28 10.5 13 10.5Z" fill="#C9A96E"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <strong>Phone</strong>
+            (555) 123-4567
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="4" width="12" height="9" rx="1" stroke="#C9A96E" stroke-width="1"/>
+              <path d="M2 5L8 9.5L14 5" stroke="#C9A96E" stroke-width="1" fill="none"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <strong>Email</strong>
+            hello@daisybeautystudio.com
+          </div>
+        </div>
+        <p class="contact-block-title" style="margin-top:1.8rem;">Follow us</p>
+        <div class="social-row">
+          <a href="#" class="social-btn">Instagram</a>
+          <a href="#" class="social-btn">Facebook</a>
+        </div>
+      </div>
+
+      <div class="contact-block reveal reveal-delay-2">
+        <p class="contact-block-title">Studio hours</p>
+        <div class="hours-grid">
+          <div class="hours-row"><span class="day">Monday</span><span>Closed</span></div>
+          <div class="hours-row"><span class="day">Tuesday</span><span>10am – 6pm</span></div>
+          <div class="hours-row"><span class="day">Wednesday</span><span>10am – 6pm</span></div>
+          <div class="hours-row"><span class="day">Thursday</span><span>10am – 7pm</span></div>
+          <div class="hours-row"><span class="day">Friday</span><span>10am – 7pm</span></div>
+          <div class="hours-row"><span class="day">Saturday</span><span>9am – 5pm</span></div>
+          <div class="hours-row"><span class="day">Sunday</span><span>Closed</span></div>
+        </div>
+
+        <div style="margin-top:2.4rem; padding:1.6rem; border:1px solid rgba(201,169,110,0.25);">
+          <p style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.7rem;">Booking</p>
+          <p style="font-size:0.88rem;color:rgba(250,247,242,0.6);line-height:1.75;">
+            To schedule your appointment, please reach out by phone or email. We'll find the perfect time for you.
+          </p>
+          <div style="margin-top:1.2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+            <a href="tel:5551234567" style="display:inline-block;padding:0.65rem 1.5rem;background:var(--gold);color:var(--bark);font-family:'Jost',sans-serif;font-size:0.76rem;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;transition:background 0.3s;">Call us</a>
+            <a href="mailto:hello@daisybeautystudio.com" style="display:inline-block;padding:0.65rem 1.5rem;border:1px solid rgba(201,169,110,0.45);color:var(--gold);font-family:'Jost',sans-serif;font-size:0.76rem;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;transition:background 0.3s,color 0.3s;">Email us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2025 Daisy Beauty Studio. All rights reserved.</span>
+  <span class="footer-tagline">Where beauty blossoms.</span>
+</footer>
+
+<script>
+// ── PETAL ANIMATION ──
+(function() {
+  const canvas = document.getElementById('petal-canvas');
+  const colors = ['#E8B4C0','#F0C8D2','#D4A0B0','#F5DDE4','#EDD0B8'];
+
+  function makePetal() {
+    const el = document.createElement('div');
+    el.className = 'petal';
+    const size = 8 + Math.random() * 14;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const left = Math.random() * 100;
+    const duration = 8 + Math.random() * 12;
+    const delay = Math.random() * 14;
+    const skewX = -30 + Math.random() * 60;
+
+    el.style.cssText = `
+      left: ${left}vw;
+      width: ${size}px;
+      height: ${size * 1.6}px;
+      background: ${color};
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform: skewX(${skewX}deg);
+      animation-duration: ${duration}s;
+      animation-delay: ${delay}s;
+      opacity: 0;
+    `;
+    canvas.appendChild(el);
+  }
+
+  for (let i = 0; i < 28; i++) makePetal();
+
+  // Re-cycle petals
+  setInterval(() => {
+    const petals = canvas.querySelectorAll('.petal');
+    if (petals.length > 60) petals[0].remove();
+    makePetal();
+  }, 3000);
+})();
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
