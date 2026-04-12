@@ -640,6 +640,36 @@
     footer { flex-direction: column; gap: 0.5rem; text-align: center; }
     .section-inner { padding: 4rem 1.5rem; }
   }
+
+  /* ── FLOATING BOOK NOW CTA ── */
+  #book-fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 200;
+    padding: 0.75rem 1.5rem;
+    background: var(--gold);
+    color: var(--bark);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(74,55,40,0.18);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s;
+    pointer-events: none;
+  }
+  #book-fab.fab-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  #book-fab:hover { background: var(--gold-dk); color: var(--white); }
 </style>
 </head>
 <body>
@@ -1083,6 +1113,28 @@ window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
 });
 
+// ── FLOATING BOOK NOW CTA ──
+(function() {
+  const fab    = document.getElementById('book-fab');
+  const hero   = document.getElementById('hero');
+  const contact = document.getElementById('contact');
+
+  function updateFab() {
+    const heroBottom    = hero.getBoundingClientRect().bottom;
+    const contactTop    = contact.getBoundingClientRect().top;
+    const inContact     = contactTop < window.innerHeight * 0.75;
+    const pastHero      = heroBottom < 0;
+    fab.classList.toggle('fab-visible', pastHero && !inContact);
+  }
+
+  window.addEventListener('scroll', updateFab, { passive: true });
+  updateFab();
+
+  fab.addEventListener('click', () => {
+    contact.scrollIntoView({ behavior: 'smooth' });
+  });
+})();
+
 // ── HAMBURGER MENU ──
 (function() {
   const btn = document.getElementById('hamburger');
@@ -1113,5 +1165,7 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
+
+<button id="book-fab" aria-label="Book now">Book now</button>
 </body>
 </html>
