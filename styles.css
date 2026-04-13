@@ -7,6 +7,25 @@
 html { scroll-behavior:smooth; }
 body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--bark); overflow-x:hidden; }
 
+/* PAGE LOADER */
+#page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#page-loader.hidden { opacity: 0; visibility: hidden; }
+#loader-daisy { animation: loaderSpin 1.6s cubic-bezier(0.22,1,0.36,1) both; transform-origin: center; }
+@keyframes loaderSpin {
+  0%   { transform: rotate(-160deg) scale(0.6); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+
 /* PETALS */
 #petal-canvas { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
 .petal { position:absolute; top:-60px; opacity:0; animation:fall linear infinite; }

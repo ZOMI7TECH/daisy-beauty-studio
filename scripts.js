@@ -1,3 +1,10 @@
+// PAGE LOADER
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('page-loader').classList.add('hidden');
+  }, 1400);
+});
+
 // PETALS
 (function(){
   const canvas = document.getElementById('petal-canvas');
