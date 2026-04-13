@@ -179,18 +179,119 @@ footer { background:#2E1F14; padding:3rem; display:grid; grid-template-columns:1
 
 /* MOBILE */
 @media (max-width:768px) {
-  nav { padding:1rem 1.5rem; }
-  .nav-links { display:none; flex-direction:column; position:absolute; top:100%; left:0; right:0; background:rgba(250,247,242,0.98); padding:1rem 0; box-shadow:0 4px 20px rgba(74,55,40,0.1); }
-  .nav-links.open { display:flex; }
-  .nav-links a { padding:0.75rem 2rem; display:block; }
-  .nav-toggle { display:flex; }
-  .services-grid, .testi-grid { grid-template-columns:1fr; }
-  .gallery-grid { grid-template-columns:repeat(2,1fr); }
+
+  /* ── NAV ── */
+  nav { padding:0.85rem 1.2rem; }
+  .nav-logo-text { white-space:nowrap; font-size:1rem; }
+
+  /* Slide-down: keep display:flex, animate max-height instead of toggling display */
+  .nav-links {
+    flex-direction:column;
+    gap:0;
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:rgba(250,247,242,0.98);
+    backdrop-filter:blur(8px);
+    box-shadow:0 6px 24px rgba(74,55,40,0.12);
+    max-height:0;
+    overflow:hidden;
+    padding:0;
+    transition:max-height 0.38s cubic-bezier(0.4,0,0.2,1), padding 0.38s ease;
+  }
+  .nav-links.open { max-height:360px; padding:0.5rem 0; }
+  .nav-links a {
+    display:flex;
+    align-items:center;
+    padding:0.75rem 2rem;
+    min-height:44px;
+    font-size:0.82rem;
+  }
+
+  /* Hamburger: show with rose/gold styling */
+  .nav-toggle {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:44px;
+    min-height:44px;
+    padding:10px;
+  }
+  .nav-toggle span { background:var(--gold-dk); width:20px; }
+
+  /* Animate hamburger → X when open */
+  .nav-toggle.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); background:var(--rose-dk); }
+  .nav-toggle.open span:nth-child(2) { opacity:0; }
+  .nav-toggle.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); background:var(--rose-dk); }
+
+  /* ── HERO ── */
+  #hero { padding:5.5rem 1.5rem 5rem; }
+  .hero-logo-large { margin-bottom:1.2rem; }
+  .hero-logo-large svg { width:82px; height:82px; }
+  .hero-title { font-size:clamp(2.8rem,11vw,3.5rem); }
+  .hero-sub { font-size:0.9rem; max-width:100%; }
+  .hero-cta {
+    margin-top:2rem;
+    margin-bottom:3rem;
+    padding:0.9rem 2rem;
+    width:100%;
+    max-width:260px;
+  }
+  .scroll-hint-wrap { bottom:1.2rem; }
+
+  /* ── SERVICES ── */
+  .services-grid { grid-template-columns:1fr; }
+  .service-items li { font-size:0.84rem; }
+  .item-price { font-size:0.82rem; }
+
+  /* ── GALLERY ── */
+  .gallery-grid { grid-template-columns:repeat(2,1fr); gap:0.7rem; }
   .gallery-item:nth-child(2), .gallery-item:nth-child(5) { margin:0; }
+  .gallery-caption { opacity:1; transform:translateY(0); font-size:0.95rem; }
+  .gallery-overlay { background:rgba(74,55,40,0.28); }
+
+  /* ── ABOUT ── */
   .about-grid { grid-template-columns:1fr; }
   .about-visual { display:none; }
+
+  /* ── TESTIMONIALS ── */
+  .testi-grid { grid-template-columns:1fr; }
+  .testi-text { font-size:1rem; }
+
+  /* ── CONTACT ── */
   .contact-grid { grid-template-columns:1fr; gap:2.5rem; }
-  footer { grid-template-columns:1fr; padding:2rem 1.5rem; }
+  .hours-grid { grid-template-columns:1fr; }
+  .hours-row { font-size:0.85rem; }
+  .booking-btns { flex-direction:column; }
+  .btn-call, .btn-email {
+    display:block;
+    text-align:center;
+    padding:0.85rem 1.5rem;
+    min-height:44px;
+    box-sizing:border-box;
+  }
+  .social-btn { min-height:44px; display:inline-flex; align-items:center; justify-content:center; }
+
+  /* ── FOOTER ── */
+  footer {
+    grid-template-columns:1fr;
+    padding:2rem 1.5rem;
+    text-align:center;
+    justify-items:center;
+  }
+  .footer-brand { align-items:center; }
+  .footer-nav { align-items:center; }
   .footer-bottom { flex-direction:column; gap:0.5rem; text-align:center; }
+
+  /* ── FLOATING CTA ── */
+  #floating-cta { bottom:1rem; right:1rem; }
+  #floating-cta a { padding:0.6rem 1.1rem; font-size:0.68rem; letter-spacing:0.12em; }
+
+  /* ── SECTIONS ── */
   .section-inner { padding:4rem 1.5rem; }
+
+  /* ── GENERAL: prevent horizontal scroll ── */
+  #hero, #services, #gallery, #about, #testimonials, #contact { max-width:100vw; overflow-x:hidden; }
+  .hero-bg-circle { display:none; }
 }

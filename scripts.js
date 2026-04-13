@@ -25,8 +25,14 @@ const navbar = document.getElementById('navbar');
 const navToggle = document.getElementById('nav-toggle');
 const navLinksList = document.getElementById('nav-links');
 window.addEventListener('scroll', ()=> navbar.classList.toggle('scrolled', window.scrollY > 60));
-navToggle.addEventListener('click', ()=> navLinksList.classList.toggle('open'));
-navLinksList.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=> navLinksList.classList.remove('open')));
+navToggle.addEventListener('click', ()=> {
+  navLinksList.classList.toggle('open');
+  navToggle.classList.toggle('open');
+});
+navLinksList.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=> {
+  navLinksList.classList.remove('open');
+  navToggle.classList.remove('open');
+}));
 
 // FLOATING CTA
 const floatingCta = document.getElementById('floating-cta');
